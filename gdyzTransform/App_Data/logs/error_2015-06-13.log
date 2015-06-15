@@ -1,0 +1,7 @@
+[Error 15:43:43.3356]
+deal failed with backSvc. 
+System.Net.Sockets.SocketException (0x80004005): 由于目标计算机积极拒绝，无法连接。 192.168.169.227:7777
+   在 System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   在 System.Net.Sockets.Socket.Connect(EndPoint remoteEP)
+   在 gdyzTransform.Controllers.ChangePasswordController.ChangePassword(Object strParam) 位置 d:\m_code\gdcx\gdyzTransform\gdyzTransform\Controllers\ChangePasswordController.cs:行号 74
+

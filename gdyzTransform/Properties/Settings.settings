@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="gdyzTransform.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ServiceIp" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">192.168.169.227</Value>
+    </Setting>
+    <Setting Name="ServicePort" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">7777</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
