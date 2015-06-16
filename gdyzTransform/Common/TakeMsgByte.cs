@@ -23,7 +23,42 @@ namespace gdyzTransform.Common
             listByte.Add(operationType);
             listByte.AddRange(Common.DatagramCoder.abcStrToToHexByte(transactCode));
             //listByte.AddRange(transactCode);
-            listByte.AddRange(Common.DatagramCoder.abcStrToToHexByte(Marshal.SizeOf(obj).ToString().PadLeft(4, '0')));
+            int structSize = Marshal.SizeOf(obj);
+            //string strSize= structSize.ToString("X").PadLeft(4, '0');
+            //structSize = 288;
+            //byte[]  byteStructSize= BitConverter.GetBytes(structSize);
+            byte[] arry = new byte[4];
+            arry[3] = (byte)(structSize & 0xFF);
+            arry[2] = (byte)((structSize & 0xFF00) >> 8);
+            arry[1] = (byte)((structSize & 0xFF0000) >> 16);
+            arry[0] = (byte)((structSize >> 24) & 0xFF);
+
+            if (true)
+            {
+                //memcpy(sbuf,"\x\x\x\x",4);  
+            }
+            //int u = (int)(byteStructSize[0] | byteStructSize[1] << 8 | byteStructSize[2] << 16 | byteStructSize[3] << 24);
+            //byteStructSize[0] = (byte)(u);
+            //byteStructSize[1] = (byte)(u >> 8);
+            //byteStructSize[2] = (byte)(u >> 16);
+            //byteStructSize[3] = (byte)(u >> 24);
+
+            //for (int i = byteStructSize.Length; i < byteStructSize.Length; i--)
+            //{
+            //    if (true)
+            //    {
+
+            //    }
+            //}
+            //if (byteStructSize.Length<4)
+            //{
+            //    int whileFlag = 4 - byteStructSize.Length;
+            //    for (int i = 0; i < whileFlag; i++)
+            //    {
+            //        byteStructSize.
+            //    }
+            //}
+            listByte.AddRange(arry);
             listByte.AddRange(Common.DatagramCoder.StructToBytes(obj));
             listByte.Add(0x03);
             return listByte.ToArray();

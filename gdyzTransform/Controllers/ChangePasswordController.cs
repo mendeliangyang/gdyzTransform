@@ -59,6 +59,7 @@ namespace gdyzTransform.Controllers
                 structTxn.IdCardType = jBody.GetStringFromJToken("IdCardType").ToString().PadLeft(3, '\0').ToCharArray();
                 structTxn.IdCardNo = jBody.GetStringFromJToken("IdCardNo").ToString().PadLeft(20, '\0').ToCharArray();
                 byteMsg = TakeMsgByte.HandleMsgToByte(0x02, 0x25, "040402", structTxn);
+                //获取到结果保存到本地，轮询查询
             }
             catch (Exception ex)
             {
