@@ -69,5 +69,43 @@ namespace gdyzTransform.Common
         {
             return (uint)(bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 24);
         }
+
+
+
+        internal static bool CheckMsgForm(byte[] bytes, byte byteHead, byte byteOperator, byte[] byteDealCode)
+        {
+            byte[] byteTemp=null;
+            int iEffect = 0;
+            if (bytes == null || bytes.Length < 2)
+            {
+                return false;
+            }
+            if (bytes[iEffect] != byteHead)
+            {
+                return false;
+            }
+            iEffect++;
+            if (bytes[1] != byteOperator)
+            {
+                return false;
+            }
+            iEffect++;
+            if (byteDealCode != null)
+            {
+                int iDealCodeLen = byteDealCode.Length;
+                byteTemp = new byte[iDealCodeLen];
+                Array.Copy(bytes, iEffect, byteTemp, 0, iDealCodeLen);
+                for (int i = 0; i < iDealCodeLen; i++)
+                {
+                    if (byteTemp[i]!=byteDealCode[i])
+                    {
+                        return false;
+                    }
+                }
+                iEffect += iDealCodeLen;
+            }
+
+            return true;
+        }
     }
 }
