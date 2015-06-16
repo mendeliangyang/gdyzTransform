@@ -72,9 +72,19 @@ namespace gdyzTransform.Common
 
 
 
-        internal static bool CheckMsgForm(byte[] bytes, byte byteHead, byte byteOperator, byte[] byteDealCode)
+        /// <summary>
+        /// 根据格式检查报文是否正确，并返回out byteData数据消息buf
+        /// </summary>
+        /// <param name="bytes">source</param>
+        /// <param name="byteHead">报文头</param>
+        /// <param name="byteOperator">操作类型</param>
+        /// <param name="byteDealCode">交易码</param>
+        /// <param name="byteData">报文内容</param>
+        /// <returns>false报文格式错误，true  byteDate中保存数据</returns>
+        internal static bool CheckMsgForm(byte[] bytes, byte byteHead, byte byteOperator, byte[] byteDealCode,out byte[] byteData)
         {
             byte[] byteTemp=null;
+            byteData = null;
             int iEffect = 0;
             if (bytes == null || bytes.Length < 2)
             {
@@ -102,10 +112,27 @@ namespace gdyzTransform.Common
                         return false;
                     }
                 }
+                byteTemp = null;
                 iEffect += iDealCodeLen;
             }
+            //TODO 检查数据体和长度是否吻合，换有结束符 0x03
+            byteTemp = new byte[4];
 
-            return true;
+            byteTemp[0] = bytes[iEffect + 4];
+            byteTemp[1] = bytes[iEffect + 3];
+            byteTemp[2] = bytes[iEffect + 2];
+            byteTemp[3] = bytes[iEffect + 1];
+            iEffect += 4;
+            int iDataLen = BitConverter.ToInt32(byteTemp, 0);
+            byteTemp = null;
+            byteData = new byte[iDataLen];
+            Array.Copy(bytes, iEffect, byteData, 0, iDataLen);
+            iEffect += iDataLen;
+            if (bytes[iEffect]==0x03)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

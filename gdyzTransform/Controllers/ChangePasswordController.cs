@@ -73,7 +73,10 @@ namespace gdyzTransform.Controllers
                 //获取到单号， 如果单号长度为0表示交易失败
                 //报文头（0x02） +操作类型（0x81）+ 单号长度（4个字节）+ 单号+ 报文尾（0x03）
                 //如果返回单号长度为0 表示数据后台保存失败
-                
+                byte[] byteData;
+                //判断报文格式是否正确
+                if(!TakeMsgByte.CheckMsgForm(listByte.ToArray(), 0x02, 0x81, null, out byteData))
+                    return fr.FormationJToken(ResponseResultCode.Error, "获取申请数据失败。", "", null);
                 //直接判断单号长度，如果不是0表示成功，发送请求接口，交易，否则返回错误给pad
                 byte[] byteOddNum = new byte[4];
                 byteOddNum[0] = listByte[5];
@@ -100,6 +103,9 @@ namespace gdyzTransform.Controllers
                     }
                     //接收：报文头（0x02） +操作类型（0x84）+交易状态长度（4个字节）+交易状态+ 报文尾（0x03）
                     listByte = scHelper.DealOnce(byteMsg);
+                    //判断报文格式是否正确
+                    if (!TakeMsgByte.CheckMsgForm(listByte.ToArray(), 0x02, 0x84, null, out byteData))
+                        return fr.FormationJToken(ResponseResultCode.Error, "获取处理结果失败。", "", null);
                     //有0和1  不考虑处理失败
                     byte[] byteNum = new byte[4];
                     byteNum[0] = listByte[5];
