@@ -18,7 +18,7 @@ namespace gdyzTransform.Controllers
         [HttpPost]
         public JToken ChangePassword(dynamic strParam)
         {
-            NLogHelper.DefalutInfo(string.Format( "ChangePassword: {0}",strParam.ToString()));
+            NLogHelper.DefalutInfo(string.Format("ChangePassword: {0}", strParam.ToString()));
 
             #region json description msgBuf
 
@@ -46,7 +46,8 @@ namespace gdyzTransform.Controllers
             //txn_040402 structTxn1 = Common.JsonHelper.JsonDeserialize<Models.txn_040402>(jobject.GetValue("body").ToString());
             #endregion
 
-            byte[] byteMsg = null;
+            byte[] byteMsg = null ,byteRet=null;
+            List<byte> listByte;
             SocketClientHelper scHelper = new SocketClientHelper();
             try
             {
@@ -58,22 +59,70 @@ namespace gdyzTransform.Controllers
                 structTxn.NewPasswd = jBody.GetStringFromJToken("NewPasswd").ToString().PadLeft(30, '\0').ToCharArray();
                 structTxn.IdCardType = jBody.GetStringFromJToken("IdCardType").ToString().PadLeft(3, '\0').ToCharArray();
                 structTxn.IdCardNo = jBody.GetStringFromJToken("IdCardNo").ToString().PadLeft(20, '\0').ToCharArray();
-                byteMsg = TakeMsgByte.HandleMsgToByte(0x02, 0x25, "040402", structTxn);
-                //获取到结果保存到本地，轮询查询
+                byteMsg = TakeMsgByte.HandleMsgToByte(0x02, 0x81, "040402", structTxn);
+
             }
             catch (Exception ex)
             {
-                NLogHelper.DefalutError("ERROR: analyze request msg.",ex);
+                NLogHelper.DefalutError("ERROR: analyze request msg.", ex);
                 return fr.FormationJToken(ResponseResultCode.Error, ex.Message, "", null);
             }
             try
             {
-               List<byte> listByte= scHelper.DealOnce(byteMsg);
-               return fr.FormationJToken(ResponseResultCode.Success, "", "", null);
+                listByte = scHelper.DealOnce(byteMsg);
+                //获取到单号， 如果单号长度为0表示交易失败
+                //报文头（0x02） +操作类型（0x81）+ 单号长度（4个字节）+ 单号+ 报文尾（0x03）
+                //如果返回单号长度为0 表示数据后台保存失败
+                
+                //直接判断单号长度，如果不是0表示成功，发送请求接口，交易，否则返回错误给pad
+                byte[] byteOddNum = new byte[4];
+                byteOddNum[0] = listByte[5];
+                byteOddNum[1] = listByte[4];
+                byteOddNum[2] = listByte[3];
+                byteOddNum[3] = listByte[2];
+                int iOddNum = BitConverter.ToInt32(byteOddNum,0);
+                //第一次申请出错，直接返回给pad错误
+                if (iOddNum==0)
+                {
+                    return fr.FormationJToken(ResponseResultCode.Error, "申请改密失败。", "", null);
+                }
+                //定时发送    报文头（0x02） +操作类型（0x84）+单号长度（4个字节）+单号+ 报文尾（0x03）
+                //把第一次返回的信息直接替换操作类型在返回给服务端
+                byteMsg = listByte.ToArray();
+                byteMsg[1] = 0x84;
+                int iRequestCount = 0;
+                while (true)
+                {
+                    //请求 24次，2分钟，如果没有返回表示处理失败
+                    if (iRequestCount>24)
+                    {
+                        return fr.FormationJToken(ResponseResultCode.Error, "改密处理失败。", "", null);
+                    }
+                    //接收：报文头（0x02） +操作类型（0x84）+交易状态长度（4个字节）+交易状态+ 报文尾（0x03）
+                    listByte = scHelper.DealOnce(byteMsg);
+                    //有0和1  不考虑处理失败
+                    byte[] byteNum = new byte[4];
+                    byteNum[0] = listByte[5];
+                    byteNum[1] = listByte[4];
+                    byteNum[2] = listByte[3];
+                    byteNum[3] = listByte[2];
+                    int iMsgLen = BitConverter.ToInt32(byteNum, 0);
+                    byteRet = new byte[iMsgLen];
+                    Array.Copy(listByte.ToArray(), 5, byteRet, 0, iMsgLen);
+                    int iRetCode= BitConverter.ToInt32(byteRet,0);
+                    if (iRetCode==1)
+                    {
+                        return fr.FormationJToken(ResponseResultCode.Success, "修改密码成功。", "", null);
+                    }
+                    //5s 询问一次  一定时间内都是0就更新为失败
+                    System.Threading.Thread.Sleep(5000);
+                    iRequestCount++;
+                }
+
             }
             catch (Exception ex)
             {
-                NLogHelper.DefalutError("ERROR: deal failed with backSvc.",ex);
+                NLogHelper.DefalutError("ERROR: deal failed with backSvc.", ex);
                 return fr.FormationJToken(ResponseResultCode.Error, ex.Message, "", null);
             }
 
@@ -142,7 +191,7 @@ namespace gdyzTransform.Controllers
 
             //}
             #endregion
-            
+
 
         }
     }
