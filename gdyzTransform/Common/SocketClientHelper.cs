@@ -11,6 +11,7 @@ namespace gdyzTransform.Common
     {
         public List<byte> DealOnce(byte[] byteMsg)
         {
+            //
             Socket socketClient = null;
             List<byte> listByte = new List<byte>();
             try
