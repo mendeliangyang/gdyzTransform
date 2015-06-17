@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Web;
 
 namespace gdyzTransform.Common
@@ -21,22 +22,21 @@ namespace gdyzTransform.Common
             List<byte> listByte = new List<byte>();
             listByte.Add(msgHead);
             listByte.Add(operationType);
-            listByte.AddRange(Common.DatagramCoder.abcStrToToHexByte(transactCode));
+            listByte.AddRange(Encoding.ASCII.GetBytes(transactCode));
             //listByte.AddRange(transactCode);
             int structSize = Marshal.SizeOf(obj);
             //string strSize= structSize.ToString("X").PadLeft(4, '0');
             //structSize = 288;
             //byte[]  byteStructSize= BitConverter.GetBytes(structSize);
+
+
             byte[] arry = new byte[4];
             arry[3] = (byte)(structSize & 0xFF);
             arry[2] = (byte)((structSize & 0xFF00) >> 8);
             arry[1] = (byte)((structSize & 0xFF0000) >> 16);
             arry[0] = (byte)((structSize >> 24) & 0xFF);
 
-            if (true)
-            {
-                //memcpy(sbuf,"\x\x\x\x",4);  
-            }
+            
             //int u = (int)(byteStructSize[0] | byteStructSize[1] << 8 | byteStructSize[2] << 16 | byteStructSize[3] << 24);
             //byteStructSize[0] = (byte)(u);
             //byteStructSize[1] = (byte)(u >> 8);

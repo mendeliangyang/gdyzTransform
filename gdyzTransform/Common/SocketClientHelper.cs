@@ -27,7 +27,7 @@ namespace gdyzTransform.Common
                 socketClient.Send(byteMsg);
                 //receive
                 int receiveLen = 0, receiveTotal = 0;
-                byte[] byteResult = new byte[1024];
+                byte[] byteResult = new byte[512];
                 int available = socketClient.Available;
                 do
                 {

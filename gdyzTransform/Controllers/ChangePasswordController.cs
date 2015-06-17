@@ -54,12 +54,20 @@ namespace gdyzTransform.Controllers
                 JObject jobject = JObject.Parse(strParam.ToString());
                 JToken jBody = jobject.GetJTokenFromJToken("body");
                 txn_040402 structTxn = new txn_040402();
-                structTxn.CardNo = jBody.GetStringFromJToken("CardNo").ToString().PadLeft(150, '\0').ToCharArray();
-                structTxn.OldPasswd = jBody.GetStringFromJToken("OldPasswd").ToString().PadLeft(30, '\0').ToCharArray();
-                structTxn.NewPasswd = jBody.GetStringFromJToken("NewPasswd").ToString().PadLeft(30, '\0').ToCharArray();
-                structTxn.IdCardType = jBody.GetStringFromJToken("IdCardType").ToString().PadLeft(3, '\0').ToCharArray();
-                structTxn.IdCardNo = jBody.GetStringFromJToken("IdCardNo").ToString().PadLeft(20, '\0').ToCharArray();
+                structTxn.CardNo = jBody.GetStringFromJToken("CardNo").ToString().PadRight(150, '\0').ToCharArray();
+                structTxn.OldPasswd = jBody.GetStringFromJToken("OldPasswd").ToString().PadRight(30, '\0').ToCharArray();
+                structTxn.NewPasswd = jBody.GetStringFromJToken("NewPasswd").ToString().PadRight(30, '\0').ToCharArray();
+                structTxn.IdCardType = jBody.GetStringFromJToken("IdCardType").ToString().PadRight(3, '\0').ToCharArray();
+                structTxn.IdCardNo = jBody.GetStringFromJToken("IdCardNo").ToString().PadRight(20, '\0').ToCharArray();
                 byteMsg = TakeMsgByte.HandleMsgToByte(0x02, 0x81, "040402", structTxn);
+
+#if DEBUG
+                System.IO.FileStream aFile = new System.IO.FileStream(@"D:\buf.txt", System.IO.FileMode.OpenOrCreate);
+                // StreamWriter sw = new StreamWriter(aFile);
+                aFile.Write(byteMsg, 0, byteMsg.Length);
+                aFile.Flush();
+                aFile.Close();
+#endif
 
             }
             catch (Exception ex)
