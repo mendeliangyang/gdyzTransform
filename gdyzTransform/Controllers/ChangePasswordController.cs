@@ -122,9 +122,11 @@ namespace gdyzTransform.Controllers
                     byteNum[3] = listByte[2];
                     int iMsgLen = BitConverter.ToInt32(byteNum, 0);
                     byteRet = new byte[iMsgLen];
-                    Array.Copy(listByte.ToArray(), 5, byteRet, 0, iMsgLen);
-                    int iRetCode= BitConverter.ToInt32(byteRet,0);
-                    if (iRetCode==1)
+                    Array.Copy(listByte.ToArray(), 6, byteRet, 0, iMsgLen);
+                    //todo 不清楚具体的数据
+                    //System.Text.Encoding.ASCII.GetString(byteRet);
+                    //int iRetCode= BitConverter.ToInt32(byteRet,0);
+                    if (byteRet[0]==0x01)
                     {
                         return fr.FormationJToken(ResponseResultCode.Success, "修改密码成功。", "", null);
                     }

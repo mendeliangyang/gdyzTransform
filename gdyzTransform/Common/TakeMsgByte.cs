@@ -118,10 +118,10 @@ namespace gdyzTransform.Common
             //TODO 检查数据体和长度是否吻合，换有结束符 0x03
             byteTemp = new byte[4];
 
-            byteTemp[0] = bytes[iEffect + 4];
-            byteTemp[1] = bytes[iEffect + 3];
-            byteTemp[2] = bytes[iEffect + 2];
-            byteTemp[3] = bytes[iEffect + 1];
+            byteTemp[0] = bytes[iEffect + 3];
+            byteTemp[1] = bytes[iEffect + 2];
+            byteTemp[2] = bytes[iEffect + 1];
+            byteTemp[3] = bytes[iEffect + 0];
             iEffect += 4;
             int iDataLen = BitConverter.ToInt32(byteTemp, 0);
             byteTemp = null;
