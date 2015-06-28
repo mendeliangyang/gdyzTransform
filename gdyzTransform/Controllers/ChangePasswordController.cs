@@ -47,18 +47,63 @@ namespace gdyzTransform.Controllers
             #endregion
 
             byte[] byteMsg = null ,byteRet=null;
-            List<byte> listByte;
+            //List<byte> listByte;
+            byte[] listByte;
             SocketClientHelper scHelper = new SocketClientHelper();
             try
             {
                 JObject jobject = JObject.Parse(strParam.ToString());
                 JToken jBody = jobject.GetJTokenFromJToken("body");
                 txn_040402 structTxn = new txn_040402();
-                structTxn.CardNo = jBody.GetStringFromJToken("CardNo").ToString().PadRight(150, '\0').ToCharArray();
-                structTxn.OldPasswd = jBody.GetStringFromJToken("OldPasswd").ToString().PadRight(30, '\0').ToCharArray();
-                structTxn.NewPasswd = jBody.GetStringFromJToken("NewPasswd").ToString().PadRight(30, '\0').ToCharArray();
+                //在银行账号前面拼接 033 163  尾部拼接  077 034
+                //string strCardNo= jBody.GetStringFromJToken("CardNo").ToString().Insert(0,@"\033\163");
+                //structTxn.CardNo = strCardNo.Insert(strCardNo.Length, @"\077\034").PadRight(200, '\0').ToCharArray();
+
+                structTxn.CardNo = jBody.GetStringFromJToken("CardNo").ToString().PadRight(200, '\0').ToCharArray();
+
+                //在密码首和尾  拼接  002  003
+                //string strOldPasswd = jBody.GetStringFromJToken("OldPasswd").ToString().Insert(0, @"\002");
+                //structTxn.OldPasswd = strOldPasswd.Insert(strOldPasswd.Length, @"\003").PadRight(30, '\0').ToCharArray();
+
+
+                //string strOldPasswd = jBody.GetStringFromJToken("OldPasswd").ToString().PadRight(60, '0');
+
+                //去掉 首尾  02  03
+                string strOldPasswd = jBody.GetStringFromJToken("OldPasswd").ToString();
+                strOldPasswd = strOldPasswd.Substring(2, strOldPasswd.Length - 4).PadRight(60, '0');
+
+                structTxn.OldPasswd = new byte[strOldPasswd.Length/2];
+                for (int i = 0,j=0; i < structTxn.OldPasswd.Length; i++,j+=2)
+                {
+                    structTxn.OldPasswd[i] = (byte)Convert.ToInt32(strOldPasswd.Substring(j,2),16);
+                }
+                //structTxn.OldPasswd =jBody.GetStringFromJToken("OldPasswd").ToString().PadRight(30, '\0').ToCharArray();
+
+                //string strNewPasswd = jBody.GetStringFromJToken("NewPasswd").ToString().Insert(0, @"\002");
+                //structTxn.NewPasswd = strNewPasswd.Insert(strNewPasswd.Length, @"\003").PadRight(30, '\0').ToCharArray();
+                //structTxn.NewPasswd = jBody.GetStringFromJToken("NewPasswd").ToString().PadRight(30, '\0').ToCharArray();
+
+                //string strNewPasswd = jBody.GetStringFromJToken("NewPasswd").ToString().PadRight(60,'0');
+
+                //去掉 首尾  02  03
+                string strNewPasswd = jBody.GetStringFromJToken("NewPasswd").ToString();
+                strNewPasswd = strNewPasswd.Substring(2, strNewPasswd.Length - 4).PadRight(60, '0');
+
+                structTxn.NewPasswd = new byte[strNewPasswd.Length / 2];
+                for (int i = 0, j = 0; i < structTxn.NewPasswd.Length; i++, j += 2)
+                {
+                    structTxn.NewPasswd[i] = (byte)Convert.ToInt32(strNewPasswd.Substring(j, 2), 16);
+                }
+
                 structTxn.IdCardType = jBody.GetStringFromJToken("IdCardType").ToString().PadRight(3, '\0').ToCharArray();
                 structTxn.IdCardNo = jBody.GetStringFromJToken("IdCardNo").ToString().PadRight(20, '\0').ToCharArray();
+
+                //todo set testData
+                structTxn.IdCardType = "10".PadRight(3, '\0').ToCharArray();
+                structTxn.CardNo = "6221883910011991039=49121204290600000A996221883910011991039=1561560000000000000003000000114000049121=000000000000=000000000000=000000042906000".PadRight(200,'\0').ToCharArray();
+                //structTxn.CardNo = "6221883910011991039=000000000000000000000000000000000000000=0000000000000000000000000000000000000000=000000000000=000000000000=000000000000000".PadRight(200, '\0').ToCharArray();
+                structTxn.IdCardNo = "610526199104132813".PadRight(20,'\0').ToCharArray();
+
                 byteMsg = TakeMsgByte.HandleMsgToByte(0x02, 0x81, "040402", structTxn);
 
 #if DEBUG
@@ -75,6 +120,8 @@ namespace gdyzTransform.Controllers
                 NLogHelper.DefalutError("ERROR: analyze request msg.", ex);
                 return fr.FormationJToken(ResponseResultCode.Error, ex.Message, "", null);
             }
+
+            int iRequestCount = 0;
             try
             {
                 listByte = scHelper.DealOnce(byteMsg);
@@ -101,7 +148,6 @@ namespace gdyzTransform.Controllers
                 //把第一次返回的信息直接替换操作类型在返回给服务端
                 byteMsg = listByte.ToArray();
                 byteMsg[1] = 0x84;
-                int iRequestCount = 0;
                 while (true)
                 {
                     //请求 24次，2分钟，如果没有返回表示处理失败
@@ -126,7 +172,7 @@ namespace gdyzTransform.Controllers
                     //todo 不清楚具体的数据
                     //System.Text.Encoding.ASCII.GetString(byteRet);
                     //int iRetCode= BitConverter.ToInt32(byteRet,0);
-                    if (byteRet[0]==0x01)
+                    if (byteRet[0]==0x31)
                     {
                         return fr.FormationJToken(ResponseResultCode.Success, "修改密码成功。", "", null);
                     }
@@ -139,7 +185,7 @@ namespace gdyzTransform.Controllers
             catch (Exception ex)
             {
                 NLogHelper.DefalutError("ERROR: deal failed with backSvc.", ex);
-                return fr.FormationJToken(ResponseResultCode.Error, ex.Message, "", null);
+                return fr.FormationJToken(ResponseResultCode.Error, ex.Message, iRequestCount+"", null);
             }
 
             #region don't delete socket

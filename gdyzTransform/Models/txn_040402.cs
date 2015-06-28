@@ -17,12 +17,12 @@ namespace gdyzTransform.Models
 
     public struct txn_040402
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 150)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 200)]
         public char[] CardNo;         //银行卡号：客户需办理业务的卡号
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
-        public char[] OldPasswd;  		//旧密码：修改前密码
+        public byte[] OldPasswd;  		//旧密码：修改前密码
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
-        public char[] NewPasswd;	//新密码：修改后密码
+        public byte[] NewPasswd;	//新密码：修改后密码
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public char[] IdCardType;	   //证件类型：办理人证件类型
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]

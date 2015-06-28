@@ -123,8 +123,6 @@ C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\WebGrease.dl
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\NLog.xml
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\EntityFramework.xml
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\Newtonsoft.Json.xml
-C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\System.Net.Http.xml
-C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\System.Net.Http.WebRequest.xml
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\System.Web.Helpers.xml
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\System.Web.Mvc.xml
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\System.Web.Razor.xml
@@ -137,8 +135,6 @@ C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\Microsoft.Da
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\Microsoft.Data.OData.xml
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\System.Spatial.xml
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\zh-Hans\EntityFramework.resources.dll
-C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\zh-Hans\System.Net.Http.resources.dll
-C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\zh-Hans\System.Net.Http.WebRequest.resources.dll
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\zh-Hans\System.Web.Helpers.resources.dll
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\zh-Hans\System.Web.Mvc.resources.dll
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\zh-Hans\System.Web.Optimization.resources.dll
@@ -181,3 +177,7 @@ C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\obj\Release\gdyz
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\obj\Release\gdyzTransform.csproj.GenerateResource.Cache
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\obj\Release\gdyzTransform.dll
 C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\obj\Release\gdyzTransform.pdb
+C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\System.Net.Http.xml
+C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\System.Net.Http.WebRequest.xml
+C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\zh-Hans\System.Net.Http.resources.dll
+C:\Users\Administrator\Source\Repos\gdyzTransform\gdyzTransform\bin\zh-Hans\System.Net.Http.WebRequest.resources.dll
